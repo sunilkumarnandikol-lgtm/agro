@@ -80,6 +80,42 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+        .animate-loading {
+            animation: loading 3s ease-in-out forwards;
+        }
+
+        /* Hide Google Translate UI */
+        .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon {
+            display: none !important;
+        }
+        body {
+            top: 0px !important;
+        }
+        .goog-tooltip {
+            display: none !important;
+        }
+        .goog-tooltip:hover {
+            display: none !important;
+        }
+        .goog-text-highlight {
+            background-color: transparent !important;
+            border: none !important; 
+            box-shadow: none !important;
+        }
+        #google_translate_element {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            opacity: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
@@ -113,12 +149,12 @@
                 </div>
 
                 <div class="flex items-center space-x-2 sm:space-x-4 ml-auto lg:ml-4">
-                    <select id="lang-select" onchange="app.setLanguage(this.value)" class="bg-gray-100 border-none text-sm rounded-md focus:ring-agro-500 py-1.5 px-3">
+                    <select id="lang-select" onchange="app.setLanguage(this.value)" class="notranslate bg-gray-100 border-none text-sm rounded-md focus:ring-agro-500 py-1.5 px-3">
                         <option value="en">English</option>
                         <option value="hi">हिंदी</option>
                         <option value="kn">ಕನ್ನಡ</option>
                     </select>
-                    <button class="bg-agro-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-agro-700 transition-colors shadow-sm hidden sm:block" data-i18n="login">Login</button>
+                    <button onclick="app.showLoginModal()" class="bg-agro-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-agro-700 transition-colors shadow-sm hidden sm:block" data-i18n="login">Login</button>
                     
                     <!-- Mobile Menu Button -->
                     <button class="lg:hidden p-2 text-gray-600 hover:text-agro-600 focus:outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
@@ -288,7 +324,72 @@
                 temp: '28°C',
                 condition: 'Partly Cloudy',
                 alert: 'Light rain expected tomorrow evening.'
-            }
+            },
+            allProducts: [
+                // Vegetables
+                { name: 'Tomatoes', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Onions', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Medium Demand', color: 'yellow' },
+                { name: 'Potatoes', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1518977672816-c90eb820155b?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Stable Market', color: 'green' },
+                { name: 'Carrots', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Broccoli', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Medium Demand', color: 'yellow' },
+                { name: 'Cabbage', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1596265371388-43edbaadab94?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Bell Peppers', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Stable Market', color: 'yellow' },
+                { name: 'Spinach', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?q=80&w=600&auto=format&fit=crop', trend: 'trending-down', demand: 'Low Demand', color: 'red' },
+                { name: 'Garlic', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1540148426945-6cf22a6b2383?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Ginger', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Stable Market', color: 'green' },
+                { name: 'Eggplant', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1614735241165-6756e1df61ab?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Medium Demand', color: 'yellow' },
+                { name: 'Zucchini', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1590505183492-91f173b984fa?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Stable Market', color: 'green' },
+                { name: 'Cucumber', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1604977042946-1eecc30f269e?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Stable Market', color: 'yellow' },
+                { name: 'Radish', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1582293041079-7814c2f12063?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Sweet Potato', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1596044708765-a8c6fcc8c2b7?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Celery', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Medium Demand', color: 'yellow' },
+                { name: 'Asparagus', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1515286591866-991740924ea1?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Premium Price', color: 'green' },
+                { name: 'Cauliflower', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1568584711475-3cb602511c52?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Peas', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1587411768638-ec71f8e33b78?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Stable Market', color: 'yellow' },
+                { name: 'Lettuce', category: 'Vegetable', img: 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                
+                // Fruits
+                { name: 'Apples', category: 'Fruit', img: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6fac6?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Premium Price', color: 'green' },
+                { name: 'Bananas', category: 'Fruit', img: 'https://images.unsplash.com/photo-1603833665858-e61d17a86224?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Oranges', category: 'Fruit', img: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Stable Market', color: 'yellow' },
+                { name: 'Mangoes', category: 'Fruit', img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Premium Price', color: 'green' },
+                { name: 'Grapes', category: 'Fruit', img: 'https://images.unsplash.com/photo-1537640538966-79f369143f8f?q=80&w=600&auto=format&fit=crop', trend: 'trending-down', demand: 'Low Demand', color: 'red' },
+                { name: 'Pineapples', category: 'Fruit', img: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Strawberries', category: 'Fruit', img: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Premium Price', color: 'green' },
+                { name: 'Watermelons', category: 'Fruit', img: 'https://images.unsplash.com/photo-1589984662646-e7b2e4962f18?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Stable Market', color: 'yellow' },
+                { name: 'Papayas', category: 'Fruit', img: 'https://images.unsplash.com/photo-1517282009859-f000ec3b26fe?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Pomegranates', category: 'Fruit', img: 'https://images.unsplash.com/photo-1528821128474-27f963b062bf?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Medium Demand', color: 'yellow' },
+                { name: 'Cherry', category: 'Fruit', img: 'https://images.unsplash.com/photo-1528820600606-0ef5600cbfee?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Premium Price', color: 'green' },
+                { name: 'Peach', category: 'Fruit', img: 'https://images.unsplash.com/photo-1528825871115-3581a5387919?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Stable Market', color: 'yellow' },
+                { name: 'Plum', category: 'Fruit', img: 'https://images.unsplash.com/photo-1563286121-65b14c3eeab9?q=80&w=600&auto=format&fit=crop', trend: 'trending-down', demand: 'Low Demand', color: 'red' },
+                { name: 'Kiwi', category: 'Fruit', img: 'https://images.unsplash.com/photo-1585059895524-72359e06138a?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Lemon', category: 'Fruit', img: 'https://images.unsplash.com/photo-1587310558661-bdab69b22416?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Stable Market', color: 'yellow' },
+                { name: 'Blueberry', category: 'Fruit', img: 'https://images.unsplash.com/photo-1425082661705-1834bfd08d98?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Premium Price', color: 'green' },
+                { name: 'Raspberry', category: 'Fruit', img: 'https://images.unsplash.com/photo-1577069861033-55d04cec4f40?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Premium Price', color: 'green' },
+                { name: 'Blackberry', category: 'Fruit', img: 'https://images.unsplash.com/photo-1615485925600-97237c4fc1ec?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Premium Price', color: 'green' },
+                { name: 'Coconut', category: 'Fruit', img: 'https://images.unsplash.com/photo-1526614180703-827d23e7c8f2?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Stable Market', color: 'yellow' },
+                { name: 'Fig', category: 'Fruit', img: 'https://images.unsplash.com/photo-1601646271927-4a00115e57b9?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Medium Demand', color: 'yellow' },
+
+                // Crops
+                { name: 'Wheat', category: 'Crop', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Stable Market', color: 'green' },
+                { name: 'Cotton', category: 'Crop', img: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=600&auto=format&fit=crop', trend: 'trending-down', demand: 'Low Demand', color: 'red' },
+                { name: 'Soybean', category: 'Crop', img: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Rice', category: 'Crop', img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Corn', category: 'Crop', img: 'https://images.unsplash.com/photo-1425136738262-212451ecaf26?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Stable Market', color: 'yellow' },
+                { name: 'Barley', category: 'Crop', img: 'https://images.unsplash.com/photo-1584065796275-f7614f1778fc?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Stable Market', color: 'yellow' },
+                { name: 'Oats', category: 'Crop', img: 'https://images.unsplash.com/photo-1563212001-c88f55331a61?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Millet', category: 'Crop', img: 'https://images.unsplash.com/photo-1601614392176-35dbfdb6fc79?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Stable Market', color: 'green' },
+                { name: 'Sorghum', category: 'Crop', img: 'https://images.unsplash.com/photo-1581446825135-e11a14605ba5?q=80&w=600&auto=format&fit=crop', trend: 'trending-down', demand: 'Low Demand', color: 'red' },
+                { name: 'Peanuts', category: 'Crop', img: 'https://images.unsplash.com/photo-1598466668784-b0d87920401b?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Sunflower', category: 'Crop', img: 'https://images.unsplash.com/photo-1595856110996-eb4bfdc382eb?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Sugarcane', category: 'Crop', img: 'https://images.unsplash.com/photo-1591530663473-0fb66f07297e?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Stable Market', color: 'yellow' },
+                { name: 'Mustard', category: 'Crop', img: 'https://images.unsplash.com/photo-1615967069188-d63503f16b25?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'High Demand', color: 'green' },
+                { name: 'Tea', category: 'Crop', img: 'https://images.unsplash.com/photo-1576092762791-dd9e2220cad1?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Premium Price', color: 'green' },
+                { name: 'Coffee', category: 'Crop', img: 'https://images.unsplash.com/photo-1559525839-b184a4d698c7?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Premium Price', color: 'green' },
+                { name: 'Rubber', category: 'Crop', img: 'https://images.unsplash.com/photo-1580888258525-4c60ee5e2c54?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Stable Market', color: 'green' },
+                { name: 'Tobacco', category: 'Crop', img: 'https://images.unsplash.com/photo-1563824647314-1e0e922756d1?q=80&w=600&auto=format&fit=crop', trend: 'minus', demand: 'Stable Market', color: 'yellow' },
+                { name: 'Jute', category: 'Crop', img: 'https://images.unsplash.com/photo-1592652431693-010530737a2c?q=80&w=600&auto=format&fit=crop', trend: 'trending-up', demand: 'Medium Demand', color: 'green' }
+            ]
         };
 
         // --- 2. COMPONENTS ---
@@ -374,6 +475,39 @@
                     <div class="flex items-center text-sm text-blue-800 bg-white bg-opacity-60 p-3 rounded-lg">
                         <i data-lucide="cloud-rain" class="h-5 w-5 mr-2 text-blue-600"></i>
                         <span>${MOCK_DATA.weather.alert}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function SplashView() {
+            return `
+                <div class="fixed inset-0 bg-agro-900 flex flex-col items-center justify-center z-[100] fade-in">
+                    <div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-agro-900 via-agro-900/80 to-transparent"></div>
+                    
+                    <div class="relative z-10 flex flex-col items-center text-center">
+                        <div class="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-md border border-white/20 mb-8 animate-bounce shadow-2xl">
+                            <i data-lucide="tractor" class="h-12 w-12 text-agro-400"></i>
+                        </div>
+                        
+                        <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-4 drop-shadow-lg">
+                            Agro<span class="text-agro-400">Link</span>
+                        </h1>
+                        <h2 class="text-xl md:text-2xl text-agro-100 font-medium tracking-wide mb-10 drop-shadow-md">
+                            Transport
+                        </h2>
+                        
+                        <!-- Loading Spinner & Text -->
+                        <div class="flex flex-col items-center space-y-4">
+                            <div class="animate-spin rounded-full h-10 w-10 border-4 border-agro-200 border-t-agro-500"></div>
+                            <h3 class="text-agro-200 text-lg font-bold tracking-widest uppercase animate-pulse">Loading...</h3>
+                        </div>
+                        
+                        <!-- Progress bar -->
+                        <div class="w-64 h-1 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm mt-6">
+                            <div class="h-full bg-agro-500 rounded-full w-0 animate-loading"></div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -497,14 +631,53 @@
                     </div>
                 </section>
                 
+                <!-- Featured Products Gallery -->
+                <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <div class="mb-8 flex justify-between items-end">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Browse All Products</h2>
+                            <p class="text-gray-500">Discover top-selling vegetables, fruits, and crops with live market trends.</p>
+                        </div>
+                        <button onclick="app.navigate('markets')" class="hidden sm:flex text-agro-600 hover:text-agro-700 font-semibold items-center">
+                            View All Markets <i data-lucide="arrow-right" class="h-4 w-4 ml-1"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="mb-6 flex flex-wrap gap-2" id="product-filters">
+                        <button onclick="app.filterProducts('All')" class="px-4 py-2 rounded-full text-sm font-medium bg-agro-600 text-white shadow-sm filter-btn" data-category="All">All</button>
+                        <button onclick="app.filterProducts('Vegetable')" class="px-4 py-2 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 shadow-sm filter-btn" data-category="Vegetable">Vegetables</button>
+                        <button onclick="app.filterProducts('Fruit')" class="px-4 py-2 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 shadow-sm filter-btn" data-category="Fruit">Fruits</button>
+                        <button onclick="app.filterProducts('Crop')" class="px-4 py-2 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 shadow-sm filter-btn" data-category="Crop">Crops</button>
+                    </div>
+
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6" id="product-grid">
+                        ${MOCK_DATA.allProducts.map(p => `
+                        <div class="group relative rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 cursor-pointer product-card" data-category="${p.category}" onclick="app.showSearchModal('${p.name}')">
+                            <img src="${p.img}" alt="${p.name}" class="w-full h-48 md:h-64 object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
+                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-gray-800 shadow-sm">
+                                ${p.category}
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 p-4 md:p-5">
+                                <h3 class="text-white font-bold text-xl md:text-2xl mb-1">${p.name}</h3>
+                                <p class="text-${p.color}-400 font-medium text-xs md:text-sm flex items-center"><i data-lucide="${p.trend}" class="h-3 w-3 mr-1"></i> ${p.demand}</p>
+                            </div>
+                            <div class="absolute top-4 right-4 bg-white/20 backdrop-blur-md p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0 duration-300">
+                                <i data-lucide="search" class="text-white h-4 w-4"></i>
+                            </div>
+                        </div>
+                        `).join('')}
+                    </div>
+                </section>
+                
                 <!-- CTA Section -->
                 <section class="bg-agro-50 border-t border-agro-100 py-16">
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                         <h2 class="text-3xl font-bold text-gray-900 mb-4" data-i18n="ready_opt">Ready to optimize your agricultural logistics?</h2>
                         <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto" data-i18n="join_desc">Join thousands of farmers and transporters using AgroLink to connect, trade, and grow.</p>
                         <div class="flex flex-col sm:flex-row justify-center gap-4">
-                            <button class="bg-agro-600 hover:bg-agro-700 text-white font-semibold px-8 py-3 rounded-lg shadow-md transition" data-i18n="reg_farmer">Register as Farmer</button>
-                            <button class="bg-white hover:bg-gray-50 text-agro-700 border border-agro-200 font-semibold px-8 py-3 rounded-lg shadow-sm transition" data-i18n="reg_trans">Register as Transporter</button>
+                            <button onclick="app.showRegisterModal('farmer')" class="bg-agro-600 hover:bg-agro-700 text-white font-semibold px-8 py-3 rounded-lg shadow-md transition" data-i18n="reg_farmer">Register as Farmer</button>
+                            <button onclick="app.showRegisterModal('transporter')" class="bg-white hover:bg-gray-50 text-agro-700 border border-agro-200 font-semibold px-8 py-3 rounded-lg shadow-sm transition" data-i18n="reg_trans">Register as Transporter</button>
                         </div>
                     </div>
                 </section>
@@ -1256,6 +1429,1165 @@
             `;
         }
 
+        function MarketsView() {
+            // We use MOCK_DATA.livePrices for the "Today Prices" tab
+            const livePricesHtml = MOCK_DATA.livePrices.map(p => `
+                <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:border-agro-500 transition cursor-pointer">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center">
+                            <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=50&h=50&fit=crop" class="w-10 h-10 rounded object-cover mr-3" onerror="this.src='https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=50&h=50&fit=crop'" alt="${p.crop}">
+                            <div>
+                                <h4 class="font-bold text-gray-900">${p.crop}</h4>
+                                <p class="text-xs text-gray-500"><i data-lucide="map-pin" class="h-3 w-3 inline"></i> ${p.location}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-xl text-green-600">₹${p.price}</p>
+                            <p class="text-[10px] text-gray-400 uppercase tracking-wider">Per ${p.unit}</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
+                        <div class="space-y-1">
+                            <span class="flex items-center text-xs ${p.trend === 'up' ? 'text-green-500' : p.trend === 'down' ? 'text-red-500' : 'text-gray-500'}">
+                                <i data-lucide="${p.trend === 'up' ? 'trending-up' : p.trend === 'down' ? 'trending-down' : 'minus'}" class="h-3 w-3 mr-1"></i>
+                                ${p.change} from yesterday
+                            </span>
+                            <span class="text-xs text-gray-400 block">Lowest: ₹${p.price - 4} | Highest: ₹${p.price + 8}</span>
+                        </div>
+                        <button onclick="app.switchMarketTab('tab-sell')" class="bg-agro-50 hover:bg-agro-100 text-agro-700 px-3 py-1.5 rounded-lg text-xs font-bold transition">Sell Now</button>
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 fade-in">
+                    <!-- Header -->
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+                            <i data-lucide="store" class="h-8 w-8 text-agro-600 mr-3"></i> Smart Market for Farmers
+                        </h1>
+                        <p class="text-gray-500 mt-2 text-lg">Sell Crops at Best Price. Farm to Market Transport Solution.</p>
+                    </div>
+
+                    <!-- Market Tabs Navigation -->
+                    <div class="flex overflow-x-auto hide-scrollbar mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-2 space-x-2">
+                        <button onclick="app.switchMarketTab('tab-prices')" id="btn-tab-prices" class="market-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium bg-agro-600 text-white transition-colors flex items-center">
+                            <i data-lucide="line-chart" class="h-4 w-4 mr-2"></i> Today Prices
+                        </button>
+                        <button onclick="app.switchMarketTab('tab-mandi')" id="btn-tab-mandi" class="market-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors flex items-center">
+                            <i data-lucide="map-pin" class="h-4 w-4 mr-2"></i> Nearby Mandi
+                        </button>
+                        <button onclick="app.switchMarketTab('tab-sell')" id="btn-tab-sell" class="market-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors flex items-center">
+                            <i data-lucide="tag" class="h-4 w-4 mr-2"></i> Sell Crop
+                        </button>
+                        <button onclick="app.switchMarketTab('tab-booktransport')" id="btn-tab-booktransport" class="market-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors flex items-center">
+                            <i data-lucide="truck" class="h-4 w-4 mr-2"></i> Book Transport
+                        </button>
+                        <button onclick="app.switchMarketTab('tab-requests')" id="btn-tab-requests" class="market-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors flex items-center relative">
+                            <i data-lucide="users" class="h-4 w-4 mr-2"></i> Buyer Requests
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                        </button>
+                        <button onclick="app.switchMarketTab('tab-calculator')" id="btn-tab-calculator" class="market-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors flex items-center">
+                            <i data-lucide="calculator" class="h-4 w-4 mr-2"></i> Profit Calculator
+                        </button>
+                        <button onclick="app.switchMarketTab('tab-storage')" id="btn-tab-storage" class="market-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors flex items-center">
+                            <i data-lucide="warehouse" class="h-4 w-4 mr-2"></i> Storage
+                        </button>
+                    </div>
+
+                    <!-- Tab Contents -->
+                    <div class="relative min-h-[500px]">
+                        
+                        <!-- TAB 1: Today Prices -->
+                        <div id="tab-prices" class="market-tab-content block fade-in">
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                <div class="lg:col-span-2">
+                                    <div class="flex flex-col md:flex-row justify-between md:items-center mb-4 gap-3">
+                                        <h3 class="text-xl font-bold text-gray-800">Live APMC Prices <span class="text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded ml-2">Updated 2 mins ago</span></h3>
+                                        <div class="flex space-x-2">
+                                            <div class="relative flex-1 md:w-48">
+                                                <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"></i>
+                                                <input type="text" placeholder="Search crop..." class="w-full pl-9 pr-8 py-1.5 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-agro-500">
+                                                <button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-agro-600"><i data-lucide="mic" class="h-4 w-4"></i></button>
+                                            </div>
+                                            <button class="bg-white border border-gray-200 px-3 py-1.5 rounded-lg text-gray-600 hover:bg-gray-50 flex items-center text-sm">
+                                                <i data-lucide="filter" class="h-4 w-4 mr-1"></i> Filter
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Weather Impact Alert -->
+                                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4 flex items-center">
+                                        <i data-lucide="cloud-rain" class="h-5 w-5 text-blue-500 mr-3"></i>
+                                        <p class="text-sm text-blue-800"><strong>Weather Impact:</strong> Heavy rains in Maharashtra are expected to drive up Onion prices by 15% across all markets next week.</p>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        ${livePricesHtml}
+                                    </div>
+                                </div>
+                                <div class="lg:col-span-1 space-y-6">
+                                    <!-- AI Prediction Widget -->
+                                    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-5 border border-indigo-100 shadow-sm relative overflow-hidden">
+                                        <div class="absolute -right-4 -top-4 opacity-10">
+                                            <i data-lucide="brain-circuit" class="h-24 w-24 text-indigo-900"></i>
+                                        </div>
+                                        <h3 class="text-sm font-bold text-indigo-900 uppercase tracking-wider mb-3 flex items-center"><i data-lucide="sparkles" class="h-4 w-4 mr-1 text-indigo-600"></i> AI Price Prediction</h3>
+                                        <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 mb-3 border border-indigo-50 hover:shadow-md transition">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h4 class="font-bold text-gray-900">Tomatoes</h4>
+                                                    <p class="text-xs text-gray-500">Tomorrow's Forecast</p>
+                                                </div>
+                                                <i data-lucide="trending-up" class="h-5 w-5 text-green-500"></i>
+                                            </div>
+                                            <div class="mt-3 flex justify-between items-center">
+                                                <span class="text-xs font-medium bg-green-100 text-green-800 px-2 py-1 rounded">Price May Increase</span>
+                                                <span class="text-sm font-bold text-gray-700">~ ₹38/kg</span>
+                                            </div>
+                                        </div>
+                                        <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-indigo-50 hover:shadow-md transition">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h4 class="font-bold text-gray-900">Cotton</h4>
+                                                    <p class="text-xs text-gray-500">Tomorrow's Forecast</p>
+                                                </div>
+                                                <i data-lucide="trending-down" class="h-5 w-5 text-red-500"></i>
+                                            </div>
+                                            <div class="mt-3 flex justify-between items-center">
+                                                <span class="text-xs font-medium bg-red-100 text-red-800 px-2 py-1 rounded">Price May Decrease</span>
+                                                <span class="text-sm font-bold text-gray-700">~ ₹6,800/Q</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 2: Nearby Mandi -->
+                        <div id="tab-mandi" class="market-tab-content hidden fade-in">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-bold text-gray-800">Direct Market Access</h3>
+                                <div class="bg-gray-100 p-1 rounded-lg flex text-sm">
+                                    <button class="bg-white shadow-sm px-3 py-1 rounded-md text-gray-800 font-medium flex items-center"><i data-lucide="list" class="h-4 w-4 mr-1"></i> List</button>
+                                    <button class="px-3 py-1 rounded-md text-gray-500 hover:text-gray-800 flex items-center"><i data-lucide="map" class="h-4 w-4 mr-1"></i> Map View</button>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                ${MOCK_DATA.markets.map(m => `
+                                    <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:border-agro-400 transition">
+                                        <div class="flex justify-between items-start mb-3">
+                                            <div class="flex items-center">
+                                                <div class="w-12 h-12 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center mr-3 border border-orange-200">
+                                                    <i data-lucide="building-2" class="h-6 w-6"></i>
+                                                </div>
+                                                <div>
+                                                    <h4 class="font-bold text-gray-900 text-lg hover:text-agro-600 cursor-pointer" onclick="app.showMarketLocationModal('${m.name}', '${m.distance}', '${m.price}', '${m.crop}')">${m.name}</h4>
+                                                    <p class="text-xs text-gray-500 flex items-center mt-0.5"><i data-lucide="navigation" class="h-3 w-3 mr-1 text-red-500"></i> ${m.distance} km away • Open: 4AM - 2PM</p>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <div class="flex items-center text-xs text-yellow-500 mb-1 justify-end">
+                                                    <i data-lucide="star" class="h-3 w-3 fill-current"></i> 4.6
+                                                </div>
+                                                <span class="bg-red-50 text-red-600 border border-red-100 text-[10px] font-bold px-2 py-0.5 rounded-full">High Crowd</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="bg-gray-50 rounded-lg p-3 my-4 grid grid-cols-2 gap-2 text-sm">
+                                            <div>
+                                                <p class="text-xs text-gray-500">Buying ${m.crop} at</p>
+                                                <p class="font-bold text-green-600 text-lg">₹${m.price}/kg</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-xs text-gray-500">Est. Waiting Time</p>
+                                                <p class="font-semibold text-gray-800">~ 45 Mins</p>
+                                            </div>
+                                            <div class="col-span-2 text-xs text-gray-600 border-t border-gray-200 pt-2 mt-1">
+                                                <i data-lucide="check-circle" class="h-3 w-3 inline text-green-500"></i> Parking Available &nbsp; • &nbsp; <i data-lucide="snowflake" class="h-3 w-3 inline text-cyan-500"></i> Cold Storage Nearby
+                                            </div>
+                                        </div>
+
+                                        <div class="flex space-x-2 pt-2">
+                                            <button onclick="app.showMarketLocationModal('${m.name}', '${m.distance}', '${m.price}', '${m.crop}')" class="flex-1 bg-agro-50 hover:bg-agro-100 text-agro-700 text-sm font-semibold py-2 rounded-lg flex justify-center items-center transition">
+                                                <i data-lucide="map" class="h-4 w-4 mr-2"></i> Navigate
+                                            </button>
+                                            <button onclick="app.switchMarketTab('tab-booktransport')" class="flex-1 bg-gray-900 hover:bg-black text-white text-sm font-semibold py-2 rounded-lg flex justify-center items-center transition">
+                                                <i data-lucide="truck" class="h-4 w-4 mr-2"></i> Book Truck
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- TAB 3: Sell Crop -->
+                        <div id="tab-sell" class="market-tab-content hidden fade-in max-w-3xl mx-auto">
+                            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                                <div class="bg-agro-600 p-6 text-white text-center relative">
+                                    <h3 class="text-2xl font-bold">Post Your Harvest</h3>
+                                    <p class="text-agro-100 mt-1">Directly upload and sell to verified buyers with AI pricing.</p>
+                                    
+                                    <button class="absolute top-6 right-6 w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center transition group" title="Use Voice Typing">
+                                        <i data-lucide="mic" class="h-5 w-5 text-white group-hover:scale-110 transition-transform"></i>
+                                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping"></span>
+                                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                                    </button>
+                                </div>
+                                <div class="p-6 md:p-8">
+                                    <form onsubmit="event.preventDefault(); alert('Crop posted successfully! Verified buyers will be notified.'); app.switchMarketTab('tab-requests');">
+                                        
+                                        <!-- Image Upload -->
+                                        <div class="mb-6 border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-agro-500 transition bg-gray-50 cursor-pointer">
+                                            <i data-lucide="image-plus" class="h-10 w-10 text-gray-400 mx-auto mb-2"></i>
+                                            <p class="font-semibold text-gray-700">Upload Crop Images</p>
+                                            <p class="text-xs text-gray-500 mt-1">Take a clear photo of your harvest for better bids</p>
+                                        </div>
+
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Crop Type</label>
+                                                <select required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-agro-500 bg-white">
+                                                    <option value="">-- Choose Crop --</option>
+                                                    <option>Tomatoes</option><option>Onions</option><option>Wheat</option><option>Cotton</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Quality Grade</label>
+                                                <select required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-agro-500 bg-white">
+                                                    <option>Grade A (Premium)</option><option>Grade B (Standard)</option><option>Grade C (Processing)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-3 gap-5 mb-5">
+                                            <div class="col-span-2">
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                                                <input type="number" required placeholder="e.g. 50" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-agro-500">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+                                                <select required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-agro-500 bg-white">
+                                                    <option>Quintals</option><option>Tons</option><option>Kg</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Expected Price (per unit)</label>
+                                                <div class="relative">
+                                                    <i data-lucide="indian-rupee" class="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"></i>
+                                                    <input type="number" required placeholder="Enter price" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-agro-500">
+                                                </div>
+                                                <p class="text-[10px] text-agro-600 mt-1 flex items-center font-semibold"><i data-lucide="sparkles" class="h-3 w-3 mr-1"></i> AI Suggests: ₹3,200 - ₹3,400</p>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-1">Harvest Date</label>
+                                                <input type="date" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-agro-500 text-gray-700">
+                                            </div>
+                                        </div>
+
+                                        <!-- Farming Type Toggle -->
+                                        <div class="flex items-center justify-between bg-gray-50 p-4 rounded-xl border border-gray-200 mb-5">
+                                            <div>
+                                                <p class="font-bold text-gray-800 text-sm">Farming Type</p>
+                                                <p class="text-xs text-gray-500">Is this harvest 100% organic?</p>
+                                            </div>
+                                            <div class="flex bg-white rounded-lg border border-gray-300 overflow-hidden">
+                                                <button type="button" class="px-4 py-2 text-sm font-medium bg-green-50 text-green-700 border-r border-gray-300">Organic</button>
+                                                <button type="button" class="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Standard</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center mb-6 text-sm text-gray-700">
+                                            <input type="checkbox" id="need-transport" class="h-4 w-4 text-agro-600 focus:ring-agro-500 border-gray-300 rounded mr-2">
+                                            <label for="need-transport">I need transport to deliver this crop to the buyer.</label>
+                                        </div>
+
+                                        <button type="submit" class="w-full bg-agro-600 hover:bg-agro-700 text-white font-bold text-lg py-4 rounded-xl shadow-lg transition-colors flex justify-center items-center">
+                                            Post for Bidding <i data-lucide="upload-cloud" class="ml-2 h-5 w-5"></i>
+                                        </button>
+                                        
+                                        <div class="mt-4 flex justify-center items-center text-xs text-gray-500">
+                                            <i data-lucide="shield-check" class="h-4 w-4 mr-1 text-green-500"></i> 100% Fraud Protection • Only Verified Buyers
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 4: Book Transport (Cab Style UI) -->
+                        <div id="tab-booktransport" class="market-tab-content hidden fade-in max-w-3xl mx-auto">
+                            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                                <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                                    <h3 class="text-xl font-bold text-gray-800 flex items-center"><i data-lucide="truck" class="h-5 w-5 mr-2 text-agro-600"></i> Schedule Transport</h3>
+                                    <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">Live Tracking</span>
+                                </div>
+                                <div class="p-6 md:p-8 flex flex-col md:flex-row gap-8">
+                                    <div class="flex-1 space-y-4">
+                                        <div class="relative">
+                                            <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200 z-0"></div>
+                                            <div class="relative z-10 flex items-center mb-4">
+                                                <div class="w-3 h-3 rounded-full bg-green-500 mx-3 ring-4 ring-white"></div>
+                                                <input type="text" value="My Farm, Nashik" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-agro-500 bg-gray-50 font-medium" readonly>
+                                            </div>
+                                            <div class="relative z-10 flex items-center">
+                                                <div class="w-3 h-3 rounded-none bg-red-500 mx-3 ring-4 ring-white"></div>
+                                                <input type="text" placeholder="Enter Drop Location (Mandi/Buyer)" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-agro-500">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="pt-4 space-y-3">
+                                            <h4 class="font-bold text-gray-800 text-sm uppercase tracking-wider">Select Vehicle</h4>
+                                            
+                                            <!-- Vehicle Option 1 -->
+                                            <div class="border border-agro-500 bg-agro-50 rounded-xl p-3 flex justify-between items-center cursor-pointer shadow-sm">
+                                                <div class="flex items-center">
+                                                    <i data-lucide="truck" class="h-8 w-8 text-agro-600 mr-3"></i>
+                                                    <div>
+                                                        <p class="font-bold text-gray-900">Mini Truck <span class="text-xs bg-agro-100 text-agro-800 px-1 rounded ml-1">AI Recommends</span></p>
+                                                        <p class="text-xs text-gray-500">Fastest • 2.5 Tons Cap.</p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="font-bold text-lg text-gray-900">₹2,400</p>
+                                                    <p class="text-[10px] text-gray-500">ETA: 15 mins</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Vehicle Option 2 -->
+                                            <div class="border border-gray-200 rounded-xl p-3 flex justify-between items-center cursor-pointer hover:border-gray-300 transition">
+                                                <div class="flex items-center">
+                                                    <i data-lucide="tractor" class="h-8 w-8 text-gray-500 mr-3"></i>
+                                                    <div>
+                                                        <p class="font-bold text-gray-900">Tractor Trolley</p>
+                                                        <p class="text-xs text-gray-500">Cheapest • 5 Tons Cap.</p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="font-bold text-lg text-gray-900">₹1,800</p>
+                                                    <p class="text-[10px] text-gray-500">ETA: 45 mins</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center mt-2 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                            <input type="checkbox" id="labor-support" class="h-4 w-4 text-agro-600 focus:ring-agro-500 border-gray-300 rounded mr-3">
+                                            <label for="labor-support" class="flex-1">Need Loading/Unloading Labor (+₹500)</label>
+                                            <i data-lucide="users" class="h-4 w-4 text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="w-full md:w-64 flex flex-col justify-end">
+                                        <div class="bg-gray-100 rounded-xl h-48 mb-4 flex items-center justify-center border border-gray-200 relative overflow-hidden">
+                                            <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&h=400&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-50 grayscale" alt="Map View">
+                                            <div class="z-10 bg-white/90 backdrop-blur px-3 py-1.5 rounded shadow-sm text-xs font-bold text-gray-800">
+                                                <i data-lucide="map" class="h-3 w-3 inline mr-1 text-agro-600"></i> Live Route Preview
+                                            </div>
+                                        </div>
+                                        <button onclick="app.showBookingModal('Mini Truck', 2400)" class="w-full bg-gray-900 hover:bg-black text-white font-bold text-lg py-4 rounded-xl shadow-lg transition-colors flex justify-center items-center">
+                                            Book Transport <i data-lucide="arrow-right" class="ml-2 h-5 w-5"></i>
+                                        </button>
+                                        <div class="flex justify-center space-x-4 mt-3">
+                                            <span class="text-xs text-gray-500 flex items-center"><i data-lucide="shield" class="h-3 w-3 mr-1"></i> Crop Insured</span>
+                                            <span class="text-xs text-gray-500 flex items-center"><i data-lucide="credit-card" class="h-3 w-3 mr-1"></i> Online Pay</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 5: Buyer Requests -->
+                        <div id="tab-requests" class="market-tab-content hidden fade-in">
+                            <div class="flex justify-between items-center mb-6">
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 flex-1 flex items-center">
+                                    <i data-lucide="bell-ring" class="h-5 w-5 text-yellow-600 mr-3"></i>
+                                    <div>
+                                        <h4 class="font-bold text-yellow-800">You have 2 new purchase requests!</h4>
+                                        <p class="text-sm text-yellow-700">AI Matched based on your recent listings.</p>
+                                    </div>
+                                </div>
+                                <button class="ml-4 bg-white border border-gray-200 text-gray-600 hover:text-gray-900 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center">
+                                    <i data-lucide="download" class="h-4 w-4 mr-2"></i> Export
+                                </button>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <!-- Request 1 -->
+                                <div class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition">
+                                    <div class="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
+                                        <div class="flex items-start">
+                                            <img src="https://ui-avatars.com/api/?name=Ramesh+Trader&background=0D8ABC&color=fff" class="w-12 h-12 rounded-full mr-4 shadow-sm">
+                                            <div>
+                                                <h4 class="font-bold text-gray-900 text-lg flex items-center">
+                                                    Ramesh Traders 
+                                                    <i data-lucide="badge-check" class="h-5 w-5 text-blue-500 ml-1" title="Verified Buyer"></i>
+                                                </h4>
+                                                <div class="flex items-center text-xs text-gray-500 mt-1">
+                                                    <span class="flex text-yellow-400 mr-2"><i data-lucide="star" class="h-3 w-3 fill-current"></i> 4.8</span>
+                                                    • Repeat Buyer • Mumbai Delivery
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span class="bg-red-50 text-red-600 border border-red-100 text-xs font-bold px-2 py-1 rounded-md mr-3">Urgent Requirement</span>
+                                            <div class="bg-green-50 border border-green-100 rounded-lg p-2 text-right min-w-[120px]">
+                                                <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">Bid: Tomatoes (20Q)</p>
+                                                <p class="text-xl font-bold text-green-600">₹32/kg</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-sm text-gray-600 mt-4 pt-4 border-t border-gray-100 flex items-center">
+                                        <i data-lucide="calendar" class="h-4 w-4 mr-2 text-gray-400"></i> Deadline: Dispatch by tomorrow evening.
+                                    </div>
+                                    <div class="flex space-x-3 mt-4">
+                                        <button onclick="alert('Payment intent initiated! Buyer will transfer funds digitally.');" class="flex-1 bg-agro-600 text-white font-semibold py-2.5 rounded-lg flex justify-center items-center hover:bg-agro-700 transition">
+                                            <i data-lucide="check" class="h-4 w-4 mr-2"></i> Accept Request
+                                        </button>
+                                        <button class="bg-blue-50 text-blue-700 font-semibold px-6 py-2.5 rounded-lg hover:bg-blue-100 transition flex items-center">
+                                            <i data-lucide="message-square" class="h-4 w-4 mr-2"></i> Chat
+                                        </button>
+                                        <button class="bg-gray-100 text-gray-600 font-semibold px-4 py-2.5 rounded-lg hover:bg-gray-200 transition">
+                                            <i data-lucide="phone" class="h-4 w-4"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 6: Profit Calculator -->
+                        <div id="tab-calculator" class="market-tab-content hidden fade-in max-w-4xl mx-auto">
+                            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                                <div class="bg-gray-800 p-6 text-white flex justify-between items-center">
+                                    <div>
+                                        <h3 class="text-2xl font-bold flex items-center"><i data-lucide="calculator" class="h-6 w-6 mr-2 text-green-400"></i> Analytics & Profit Calculator</h3>
+                                        <p class="text-gray-400 mt-1 text-sm">Calculate total earnings and expenses before selling.</p>
+                                    </div>
+                                    <button class="bg-gray-700 hover:bg-gray-600 px-3 py-1.5 rounded flex items-center text-sm transition">
+                                        <i data-lucide="file-text" class="h-4 w-4 mr-2"></i> Export PDF
+                                    </button>
+                                </div>
+                                <div class="p-6 sm:p-8 flex flex-col lg:flex-row gap-8">
+                                    <div class="flex-1">
+                                        <div class="grid grid-cols-2 gap-4 mb-4">
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Crop Type</label>
+                                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-agro-500 bg-white text-sm">
+                                                    <option>Tomatoes</option><option>Onions</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Production (Kg)</label>
+                                                <input type="number" id="calc-qty" value="1000" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-agro-500 text-sm" oninput="app.calculateProfit()">
+                                            </div>
+                                        </div>
+                                        
+                                        <h4 class="font-bold text-gray-800 border-b border-gray-100 pb-2 mb-3 mt-6">Expenses Breakdown</h4>
+                                        <div class="grid grid-cols-2 gap-4 space-y-0">
+                                            <div>
+                                                <label class="block text-xs text-gray-600 mb-1">Seed Cost (₹)</label>
+                                                <input type="number" id="calc-seed" value="5000" class="w-full px-3 py-2 border border-gray-200 rounded focus:ring-agro-500 text-sm bg-red-50" oninput="app.calculateProfit()">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-600 mb-1">Fertilizer/Pesticide (₹)</label>
+                                                <input type="number" id="calc-fert" value="3000" class="w-full px-3 py-2 border border-gray-200 rounded focus:ring-agro-500 text-sm bg-red-50" oninput="app.calculateProfit()">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-600 mb-1">Labor Cost (₹)</label>
+                                                <input type="number" id="calc-labor" value="4000" class="w-full px-3 py-2 border border-gray-200 rounded focus:ring-agro-500 text-sm bg-red-50" oninput="app.calculateProfit()">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-600 mb-1">Transport & Storage (₹)</label>
+                                                <input type="number" id="calc-transport" value="2500" class="w-full px-3 py-2 border border-gray-200 rounded focus:ring-agro-500 text-sm bg-red-50" oninput="app.calculateProfit()">
+                                            </div>
+                                        </div>
+
+                                        <h4 class="font-bold text-gray-800 border-b border-gray-100 pb-2 mb-3 mt-6">Market Revenue</h4>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 mb-1">Selling Price (₹ per Kg)</label>
+                                            <input type="number" id="calc-price" value="30" class="w-full px-3 py-2 border border-gray-200 rounded focus:ring-agro-500 font-bold text-lg bg-green-50" oninput="app.calculateProfit()">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="w-full lg:w-72 flex flex-col space-y-4">
+                                        <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 text-center relative overflow-hidden">
+                                            <div id="calc-profit-bg" class="absolute inset-0 bg-green-100 opacity-20"></div>
+                                            <p class="text-sm font-bold text-gray-600 uppercase tracking-wider mb-1 relative z-10">Net Profit</p>
+                                            <h2 id="calc-result" class="text-4xl font-black text-green-600 relative z-10">₹15,500</h2>
+                                            <div class="mt-2 inline-block bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded-full relative z-10">
+                                                <span id="calc-margin">51%</span> Profit Margin
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm text-sm">
+                                            <div class="flex justify-between mb-2"><span>Total Revenue:</span> <span id="calc-gross" class="font-bold text-gray-800">₹30,000</span></div>
+                                            <div class="flex justify-between mb-2 pb-2 border-b border-gray-100"><span>Total Expenses:</span> <span id="calc-costs" class="font-bold text-red-600">-₹14,500</span></div>
+                                            <p class="text-xs text-gray-500 mt-2"><i data-lucide="lightbulb" class="inline h-3 w-3 text-yellow-500 mr-1"></i> AI Suggestion: Sell in Mumbai Mandi to increase profit margin by 8%.</p>
+                                        </div>
+                                        
+                                        <button onclick="app.switchMarketTab('tab-mandi')" class="w-full bg-agro-600 text-white font-bold py-3 rounded-xl shadow-md hover:bg-agro-700 transition">Compare Markets</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 7: Storage -->
+                        <div id="tab-storage" class="market-tab-content hidden fade-in">
+                            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center shadow-sm">
+                                <div class="flex items-start">
+                                    <div class="bg-white p-2 rounded-full mr-3 shadow-sm text-blue-500">
+                                        <i data-lucide="cloud-rain" class="h-6 w-6"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-blue-900">Weather Alert: Protect Harvest</h4>
+                                        <p class="text-sm text-blue-700 mt-0.5">Showers expected tomorrow. Secure crops in dry storage immediately.</p>
+                                    </div>
+                                </div>
+                                <button class="mt-3 sm:mt-0 whitespace-nowrap bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow transition">Find Fast Storage</button>
+                            </div>
+                            
+                            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center justify-between">
+                                Nearby Cold Storage & Warehouses
+                                <span class="text-xs font-normal text-gray-500 flex items-center"><i data-lucide="scan-line" class="h-4 w-4 mr-1"></i> QR Inventory Supported</span>
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                
+                                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+                                    <div class="relative h-40">
+                                        <img src="https://images.unsplash.com/photo-1586528116311-ad8ed7c663c0?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover">
+                                        <div class="absolute top-3 left-3 bg-cyan-500 text-white text-xs font-bold px-2 py-1 rounded flex items-center">
+                                            <i data-lucide="thermometer-snowflake" class="h-3 w-3 mr-1"></i> 2°C - 8°C
+                                        </div>
+                                        <div class="absolute top-3 right-3 bg-white/90 backdrop-blur text-gray-800 text-xs font-bold px-2 py-1 rounded shadow-sm">
+                                            <i data-lucide="star" class="h-3 w-3 inline text-yellow-500 fill-current"></i> 4.9
+                                        </div>
+                                    </div>
+                                    <div class="p-5">
+                                        <h4 class="font-bold text-gray-900 text-lg">AgriSafe Cold Chain</h4>
+                                        <p class="text-xs text-gray-500 mt-1 mb-3"><i data-lucide="map-pin" class="inline h-3 w-3 mr-1"></i> 8 km away • 50 Tons Space Left</p>
+                                        <div class="flex flex-wrap gap-1 mb-4 border-b border-gray-100 pb-4">
+                                            <span class="bg-green-50 text-green-700 text-[10px] px-2 py-1 rounded border border-green-100">Govt. Subsidy</span>
+                                            <span class="bg-gray-100 text-gray-700 text-[10px] px-2 py-1 rounded">24/7 Security</span>
+                                            <span class="bg-gray-100 text-gray-700 text-[10px] px-2 py-1 rounded">Insured</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <div>
+                                                <p class="text-[10px] text-gray-500 uppercase tracking-wider">Daily Rate</p>
+                                                <span class="font-bold text-agro-600 text-lg">₹15<span class="text-xs font-normal text-gray-500">/Q</span></span>
+                                            </div>
+                                            <button class="bg-gray-900 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-black transition">Book Space</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+                                    <div class="relative h-40">
+                                        <img src="https://images.unsplash.com/photo-1565793298595-6a879b1d9492?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover">
+                                        <div class="absolute top-3 left-3 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded flex items-center">
+                                            <i data-lucide="sun" class="h-3 w-3 mr-1"></i> Dry Storage
+                                        </div>
+                                    </div>
+                                    <div class="p-5">
+                                        <h4 class="font-bold text-gray-900 text-lg">Rural Warehouse Co.</h4>
+                                        <p class="text-xs text-gray-500 mt-1 mb-3"><i data-lucide="map-pin" class="inline h-3 w-3 mr-1"></i> 14 km away • 120 Tons Space Left</p>
+                                        <div class="flex flex-wrap gap-1 mb-4 border-b border-gray-100 pb-4">
+                                            <span class="bg-gray-100 text-gray-700 text-[10px] px-2 py-1 rounded">Pest Controlled</span>
+                                            <span class="bg-gray-100 text-gray-700 text-[10px] px-2 py-1 rounded">Pickup Support</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <div>
+                                                <p class="text-[10px] text-gray-500 uppercase tracking-wider">Weekly Rate</p>
+                                                <span class="font-bold text-agro-600 text-lg">₹45<span class="text-xs font-normal text-gray-500">/Q</span></span>
+                                            </div>
+                                            <button class="bg-gray-900 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-black transition">Book Space</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+        }
+
+        function TransportView() {
+            return `
+                <div class="bg-gray-50 min-h-screen py-6 fade-in pb-24">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        
+                        <!-- Header -->
+                        <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div>
+                                <h1 class="text-2xl md:text-3xl font-black text-gray-900 flex items-center">
+                                    <i data-lucide="truck" class="mr-3 h-8 w-8 text-agro-600"></i> Smart Transport
+                                </h1>
+                                <p class="text-gray-500 text-sm mt-1">Book vehicles, track deliveries, and find shared transport.</p>
+                            </div>
+                            <button onclick="app.switchTransportTab('trans-sos')" class="bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 px-4 py-2 rounded-xl font-bold flex items-center shadow-sm transition">
+                                <i data-lucide="siren" class="h-5 w-5 mr-2"></i> Emergency SOS
+                            </button>
+                        </div>
+
+                        <!-- Tab Navigation -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-1 mb-6 overflow-x-auto hide-scrollbar">
+                            <div class="flex space-x-1 min-w-max">
+                                <button id="btn-trans-book" onclick="app.switchTransportTab('trans-book')" class="trans-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium bg-agro-600 text-white transition-colors flex items-center shadow-sm">
+                                    <i data-lucide="map-pin" class="h-4 w-4 mr-2"></i> Book Transport
+                                </button>
+                                <button id="btn-trans-pool" onclick="app.switchTransportTab('trans-pool')" class="trans-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors flex items-center">
+                                    <i data-lucide="users" class="h-4 w-4 mr-2"></i> Shared Transport
+                                </button>
+                                <button id="btn-trans-track" onclick="app.switchTransportTab('trans-track')" class="trans-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors flex items-center">
+                                    <i data-lucide="navigation" class="h-4 w-4 mr-2"></i> Live Tracking
+                                </button>
+                                <button id="btn-trans-drivers" onclick="app.switchTransportTab('trans-drivers')" class="trans-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors flex items-center">
+                                    <i data-lucide="steering-wheel" class="h-4 w-4 mr-2"></i> Nearby Drivers
+                                </button>
+                                <button id="btn-trans-history" onclick="app.switchTransportTab('trans-history')" class="trans-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors flex items-center">
+                                    <i data-lucide="receipt" class="h-4 w-4 mr-2"></i> History & Pay
+                                </button>
+                                <button id="btn-trans-sos" onclick="app.switchTransportTab('trans-sos')" class="trans-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center">
+                                    <i data-lucide="shield-alert" class="h-4 w-4 mr-2"></i> SOS Support
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tab Content Container -->
+                        <div class="relative">
+
+                            <!-- TAB 1: Book Transport -->
+                            <div id="trans-book" class="trans-tab-content block fade-in">
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                    
+                                    <!-- Left: Booking Form -->
+                                    <div class="lg:col-span-1 space-y-4">
+                                        <!-- Locations -->
+                                        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+                                            <h3 class="font-bold text-gray-800 mb-4 flex items-center"><i data-lucide="map" class="h-5 w-5 mr-2 text-agro-600"></i> Set Route</h3>
+                                            
+                                            <div class="relative pl-6 space-y-4">
+                                                <!-- Vertical Line connecting dots -->
+                                                <div class="absolute left-2 top-4 bottom-4 w-0.5 bg-gray-200"></div>
+                                                
+                                                <!-- Pickup -->
+                                                <div class="relative">
+                                                    <div class="absolute -left-6 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-sm"></div>
+                                                    <div class="relative flex items-center">
+                                                        <input type="text" value="My Farm, Solapur" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-agro-500 font-medium text-gray-900" placeholder="Pickup Location">
+                                                        <button class="absolute right-3 text-gray-400 hover:text-agro-600"><i data-lucide="mic" class="h-4 w-4"></i></button>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Drop -->
+                                                <div class="relative">
+                                                    <div class="absolute -left-6 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-sm"></div>
+                                                    <div class="relative flex items-center">
+                                                        <input type="text" placeholder="Where to? (Market/Warehouse)" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-agro-500 font-medium text-gray-900 shadow-sm">
+                                                        <button class="absolute right-3 text-gray-400 hover:text-agro-600"><i data-lucide="mic" class="h-4 w-4"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mt-4 flex gap-2">
+                                                <button class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold py-2 rounded-lg flex justify-center items-center transition"><i data-lucide="map-pin" class="h-3 w-3 mr-1"></i> Nearby Mandi</button>
+                                                <button class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold py-2 rounded-lg flex justify-center items-center transition"><i data-lucide="warehouse" class="h-3 w-3 mr-1"></i> My Storage</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Load Details -->
+                                        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+                                            <h3 class="font-bold text-gray-800 mb-3 text-sm">Load Details</h3>
+                                            <div class="flex gap-3 mb-4">
+                                                <div class="flex-1">
+                                                    <label class="block text-xs text-gray-500 mb-1">Crop Type</label>
+                                                    <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-agro-500">
+                                                        <option>Onions</option>
+                                                        <option>Tomatoes</option>
+                                                        <option>Wheat</option>
+                                                        <option>Other</option>
+                                                    </select>
+                                                </div>
+                                                <div class="flex-1">
+                                                    <label class="block text-xs text-gray-500 mb-1">Est. Weight</label>
+                                                    <div class="flex">
+                                                        <input type="number" value="5" class="w-2/3 border border-gray-300 rounded-l-lg px-3 py-2 text-sm focus:ring-agro-500 border-r-0">
+                                                        <span class="w-1/3 bg-gray-50 border border-gray-300 rounded-r-lg px-2 py-2 text-sm text-gray-500 flex items-center justify-center">Tons</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <label class="flex items-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition">
+                                                <input type="checkbox" class="h-4 w-4 text-agro-600 focus:ring-agro-500 border-gray-300 rounded">
+                                                <div class="ml-3">
+                                                    <span class="block text-sm font-bold text-gray-800">Require Loading Labor</span>
+                                                    <span class="block text-xs text-gray-500">+ ₹300 approx.</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right: Map & Vehicles -->
+                                    <div class="lg:col-span-2 space-y-4">
+                                        <!-- Map Placeholder -->
+                                        <div class="bg-gray-200 rounded-2xl h-64 relative overflow-hidden shadow-inner border border-gray-300">
+                                            <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=1000" class="w-full h-full object-cover opacity-60 mix-blend-multiply" alt="Map">
+                                            
+                                            <!-- Overlay Route Elements -->
+                                            <div class="absolute top-1/4 left-1/4 w-4 h-4 bg-green-500 border-2 border-white rounded-full shadow-lg z-10 animate-pulse"></div>
+                                            <div class="absolute bottom-1/3 right-1/3 w-4 h-4 bg-red-500 border-2 border-white rounded-full shadow-lg z-10"></div>
+                                            
+                                            <!-- AI Route Badge -->
+                                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-gray-100 z-20 max-w-[200px]">
+                                                <p class="text-xs font-bold text-agro-600 flex items-center mb-1"><i data-lucide="sparkles" class="h-3 w-3 mr-1"></i> AI Route Optimized</p>
+                                                <p class="text-sm font-bold text-gray-800">45 km • 1h 20m</p>
+                                                <p class="text-[10px] text-gray-500">Avoiding toll traffic on NH-65</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Vehicle Options -->
+                                        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+                                            <h3 class="font-bold text-gray-800 mb-4">Select Vehicle</h3>
+                                            <div class="space-y-3">
+                                                
+                                                <!-- Tractor -->
+                                                <div onclick="app.selectVehicle(this, 'Tractor', 850)" class="vehicle-card flex items-center justify-between p-3 border-2 border-transparent rounded-xl cursor-pointer hover:bg-gray-50 transition border-gray-100">
+                                                    <div class="flex items-center">
+                                                        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
+                                                            <i data-lucide="tractor" class="h-6 w-6 text-orange-600"></i>
+                                                        </div>
+                                                        <div>
+                                                            <p class="font-bold text-gray-800">Tractor Trolley</p>
+                                                            <p class="text-xs text-gray-500">Up to 3 Tons • 20 mins away</p>
+                                                            <span class="inline-block mt-1 bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded">Cheapest</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <p class="font-black text-lg text-gray-900">₹850</p>
+                                                        <p class="text-[10px] text-gray-400">Fixed Fare</p>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Mini Truck (Selected) -->
+                                                <div onclick="app.selectVehicle(this, 'Mini Truck', 1400)" class="vehicle-card flex items-center justify-between p-3 border-2 border-agro-500 bg-agro-50/30 rounded-xl cursor-pointer transition">
+                                                    <div class="flex items-center">
+                                                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                                                            <i data-lucide="truck" class="h-6 w-6 text-blue-600"></i>
+                                                        </div>
+                                                        <div>
+                                                            <p class="font-bold text-gray-800">Mini Truck (Pickup)</p>
+                                                            <p class="text-xs text-gray-500">Up to 1.5 Tons • 5 mins away</p>
+                                                            <span class="inline-block mt-1 bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded"><i data-lucide="zap" class="inline h-3 w-3"></i> Fastest</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <p class="font-black text-lg text-gray-900">₹1,400</p>
+                                                        <p class="text-[10px] text-gray-400">Fixed Fare</p>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Cold Storage -->
+                                                <div onclick="app.selectVehicle(this, 'Cold Storage', 2800)" class="vehicle-card flex items-center justify-between p-3 border-2 border-transparent rounded-xl cursor-pointer hover:bg-gray-50 transition border-gray-100">
+                                                    <div class="flex items-center">
+                                                        <div class="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center mr-4">
+                                                            <i data-lucide="snowflake" class="h-6 w-6 text-cyan-600"></i>
+                                                        </div>
+                                                        <div>
+                                                            <p class="font-bold text-gray-800">Refrigerated Truck</p>
+                                                            <p class="text-xs text-gray-500">Up to 5 Tons • 45 mins away</p>
+                                                            <span class="inline-block mt-1 bg-cyan-50 text-cyan-700 text-[10px] font-bold px-2 py-0.5 rounded border border-cyan-200">Best for Perishables</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <p class="font-black text-lg text-gray-900">₹2,800</p>
+                                                        <p class="text-[10px] text-gray-400">Fixed Fare</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Book Button -->
+                                            <button onclick="app.showTransportBookingModal()" class="w-full mt-6 bg-agro-600 hover:bg-agro-700 text-white font-black text-lg py-4 rounded-xl shadow-lg transition-transform transform hover:-translate-y-0.5 flex justify-center items-center">
+                                                Book Transport <i data-lucide="arrow-right" class="h-5 w-5 ml-2"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 2: Shared Transport -->
+                            <div id="trans-pool" class="trans-tab-content hidden fade-in">
+                                <div class="max-w-4xl mx-auto">
+                                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-white mb-6 shadow-md flex items-center justify-between">
+                                        <div>
+                                            <h2 class="text-2xl font-black flex items-center mb-2"><i data-lucide="users" class="h-6 w-6 mr-2"></i> AgroPool</h2>
+                                            <p class="text-blue-100 text-sm max-w-md">Share truck space with nearby farmers going to the same market. Save up to 40% on transport costs!</p>
+                                        </div>
+                                        <button class="bg-white text-blue-700 font-bold px-5 py-2.5 rounded-lg shadow-sm hover:bg-blue-50 transition hidden md:block">
+                                            Post My Route
+                                        </button>
+                                    </div>
+
+                                    <div class="space-y-4">
+                                        <!-- Pool Item 1 -->
+                                        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition">
+                                            <div class="flex justify-between items-start mb-4">
+                                                <div class="flex items-center">
+                                                    <div class="w-10 h-10 bg-gray-200 rounded-full overflow-hidden mr-3">
+                                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" class="w-full h-full object-cover">
+                                                    </div>
+                                                    <div>
+                                                        <p class="font-bold text-gray-900">Ramesh Kumar</p>
+                                                        <p class="text-xs text-gray-500">Leaving in 2 Hours • 4.8 <i data-lucide="star" class="inline h-3 w-3 text-yellow-400 fill-current"></i></p>
+                                                    </div>
+                                                </div>
+                                                <span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-1 rounded-full">Half Empty (2 Tons left)</span>
+                                            </div>
+                                            
+                                            <div class="flex items-center gap-4 text-sm font-medium text-gray-700 mb-4 bg-gray-50 p-3 rounded-lg">
+                                                <div class="flex-1 text-center">
+                                                    <p class="text-xs text-gray-400 mb-1">From</p>
+                                                    <p class="truncate">Solapur North</p>
+                                                </div>
+                                                <i data-lucide="arrow-right" class="h-4 w-4 text-gray-400"></i>
+                                                <div class="flex-1 text-center">
+                                                    <p class="text-xs text-gray-400 mb-1">To</p>
+                                                    <p class="truncate">Pune APMC</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex justify-between items-center">
+                                                <div>
+                                                    <p class="text-xs text-gray-500">Share Cost</p>
+                                                    <p class="text-xl font-black text-agro-600">₹600</p>
+                                                </div>
+                                                <button onclick="alert('Request sent to Ramesh!')" class="bg-agro-600 hover:bg-agro-700 text-white px-5 py-2 rounded-lg font-semibold text-sm transition">Join Ride</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Pool Item 2 -->
+                                        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition">
+                                            <div class="flex justify-between items-start mb-4">
+                                                <div class="flex items-center">
+                                                    <div class="w-10 h-10 bg-gray-200 rounded-full overflow-hidden mr-3">
+                                                        <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100" class="w-full h-full object-cover">
+                                                    </div>
+                                                    <div>
+                                                        <p class="font-bold text-gray-900">Vikram S.</p>
+                                                        <p class="text-xs text-gray-500">Leaving Tomorrow • 4.5 <i data-lucide="star" class="inline h-3 w-3 text-yellow-400 fill-current"></i></p>
+                                                    </div>
+                                                </div>
+                                                <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2.5 py-1 rounded-full">Minor Space (500 kg)</span>
+                                            </div>
+                                            
+                                            <div class="flex items-center gap-4 text-sm font-medium text-gray-700 mb-4 bg-gray-50 p-3 rounded-lg">
+                                                <div class="flex-1 text-center">
+                                                    <p class="text-xs text-gray-400 mb-1">From</p>
+                                                    <p class="truncate">Akkalkot</p>
+                                                </div>
+                                                <i data-lucide="arrow-right" class="h-4 w-4 text-gray-400"></i>
+                                                <div class="flex-1 text-center">
+                                                    <p class="text-xs text-gray-400 mb-1">To</p>
+                                                    <p class="truncate">Mumbai Vashi</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex justify-between items-center">
+                                                <div>
+                                                    <p class="text-xs text-gray-500">Share Cost</p>
+                                                    <p class="text-xl font-black text-agro-600">₹300</p>
+                                                </div>
+                                                <button onclick="alert('Request sent to Vikram!')" class="bg-agro-600 hover:bg-agro-700 text-white px-5 py-2 rounded-lg font-semibold text-sm transition">Join Ride</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 3: Live Tracking -->
+                            <div id="trans-track" class="trans-tab-content hidden fade-in">
+                                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden max-w-3xl mx-auto">
+                                    <!-- Map Placeholder -->
+                                    <div class="h-72 bg-gray-200 relative">
+                                        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=1200" class="w-full h-full object-cover opacity-80" alt="Map">
+                                        
+                                        <!-- Truck Pin -->
+                                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                            <div class="bg-black text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg mb-1 whitespace-nowrap">MH 12 AB 1234</div>
+                                            <div class="w-10 h-10 bg-agro-600 rounded-full flex items-center justify-center border-4 border-white shadow-xl mx-auto relative animate-bounce">
+                                                <i data-lucide="truck" class="h-5 w-5 text-white"></i>
+                                            </div>
+                                        </div>
+
+                                        <!-- Delivery Status Badge -->
+                                        <div class="absolute top-4 left-4 right-4 md:right-auto bg-white/95 backdrop-blur rounded-xl p-4 shadow-lg border border-gray-100">
+                                            <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Status: En Route</p>
+                                            <p class="text-2xl font-black text-gray-900">Arriving in 45 min</p>
+                                            <p class="text-sm text-gray-600 mt-1">20 km to Destination (Pune APMC)</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-6">
+                                        <div class="flex items-center justify-between border-b border-gray-100 pb-6 mb-6">
+                                            <div class="flex items-center">
+                                                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100" class="w-14 h-14 rounded-full object-cover mr-4">
+                                                <div>
+                                                    <p class="font-bold text-gray-900 text-lg">Santosh Patil</p>
+                                                    <p class="text-sm text-gray-500">Driver • 4.9 <i data-lucide="star" class="inline h-3 w-3 text-yellow-400 fill-current"></i></p>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3">
+                                                <button class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition"><i data-lucide="message-square" class="h-5 w-5"></i></button>
+                                                <button class="w-12 h-12 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-100 transition"><i data-lucide="phone" class="h-5 w-5"></i></button>
+                                            </div>
+                                        </div>
+
+                                        <h3 class="font-bold text-gray-800 mb-4 text-sm">Delivery Timeline</h3>
+                                        <div class="space-y-6 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-200 before:to-transparent">
+                                            
+                                            <!-- Step 1 -->
+                                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                                                <div class="flex items-center justify-center w-6 h-6 rounded-full border-2 border-white bg-green-500 text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                                                    <i data-lucide="check" class="h-3 w-3"></i>
+                                                </div>
+                                                <div class="w-[calc(100%-3rem)] md:w-[calc(50%-1.5rem)] bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                                                    <div class="flex items-center justify-between mb-1">
+                                                        <div class="font-bold text-gray-900">Picked Up</div>
+                                                        <div class="text-xs text-gray-500">10:30 AM</div>
+                                                    </div>
+                                                    <div class="text-sm text-gray-500">Farm loaded with 5 Tons of Onions.</div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Step 2 -->
+                                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                                                <div class="flex items-center justify-center w-6 h-6 rounded-full border-2 border-white bg-blue-500 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 animate-pulse">
+                                                </div>
+                                                <div class="w-[calc(100%-3rem)] md:w-[calc(50%-1.5rem)] bg-blue-50 p-4 rounded-xl border border-blue-100 shadow-sm">
+                                                    <div class="flex items-center justify-between mb-1">
+                                                        <div class="font-bold text-blue-900">In Transit</div>
+                                                        <div class="text-xs text-blue-500">Current</div>
+                                                    </div>
+                                                    <div class="text-sm text-blue-700">Crossed Solapur Toll Plaza.</div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Step 3 -->
+                                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                                                <div class="flex items-center justify-center w-6 h-6 rounded-full border-2 border-white bg-gray-200 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                                                </div>
+                                                <div class="w-[calc(100%-3rem)] md:w-[calc(50%-1.5rem)] bg-white p-4 rounded-xl border border-gray-100 opacity-50">
+                                                    <div class="flex items-center justify-between mb-1">
+                                                        <div class="font-bold text-gray-900">Delivered</div>
+                                                        <div class="text-xs text-gray-500">Est. 1:15 PM</div>
+                                                    </div>
+                                                    <div class="text-sm text-gray-500">Waiting for receiver QR scan.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-8 bg-gray-50 rounded-xl p-4 flex justify-between items-center border border-gray-200">
+                                            <div>
+                                                <p class="text-xs text-gray-500 mb-1">Receiver Code (Share with buyer)</p>
+                                                <p class="text-2xl font-black tracking-[0.2em] text-gray-900">9281</p>
+                                            </div>
+                                            <i data-lucide="qr-code" class="h-10 w-10 text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 4: Nearby Drivers -->
+                            <div id="trans-drivers" class="trans-tab-content hidden fade-in">
+                                <div class="max-w-4xl mx-auto space-y-4">
+                                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
+                                        <div class="flex-1 relative">
+                                            <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5"></i>
+                                            <input type="text" placeholder="Search by name or vehicle type..." class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-agro-500 focus:outline-none">
+                                        </div>
+                                        <select class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-agro-500 focus:outline-none">
+                                            <option>All Vehicles</option>
+                                            <option>Tractor</option>
+                                            <option>Pickup Truck</option>
+                                            <option>Heavy Duty</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Driver Card 1 -->
+                                    <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row items-center gap-6 hover:shadow-md transition">
+                                        <div class="relative">
+                                            <img src="https://images.unsplash.com/photo-1542157585-ef20bfc74b04?w=150" class="w-20 h-20 rounded-full object-cover">
+                                            <div class="absolute -bottom-2 -right-2 bg-blue-500 text-white p-1 rounded-full border-2 border-white" title="Verified Driver">
+                                                <i data-lucide="badge-check" class="h-4 w-4"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1 text-center md:text-left">
+                                            <h3 class="font-bold text-lg text-gray-900">Anil Desai</h3>
+                                            <p class="text-sm text-gray-500 mb-2">Mahindra Bolero Pickup • 1.5 Tons Capacity</p>
+                                            <div class="flex items-center justify-center md:justify-start gap-3">
+                                                <span class="flex items-center text-sm font-bold text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded"><i data-lucide="star" class="h-3 w-3 fill-current mr-1"></i> 4.9 (120 trips)</span>
+                                                <span class="flex items-center text-sm text-gray-600"><i data-lucide="map-pin" class="h-3 w-3 mr-1 text-gray-400"></i> 2.4 km away</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-2 w-full md:w-auto mt-4 md:mt-0">
+                                            <button class="flex-1 md:flex-none bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-semibold transition flex items-center justify-center"><i data-lucide="message-square" class="h-4 w-4 mr-2"></i> Chat</button>
+                                            <button class="flex-1 md:flex-none bg-agro-600 hover:bg-agro-700 text-white px-6 py-2 rounded-lg font-semibold transition flex items-center justify-center"><i data-lucide="phone" class="h-4 w-4 mr-2"></i> Call</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Driver Card 2 -->
+                                    <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row items-center gap-6 hover:shadow-md transition">
+                                        <div class="relative">
+                                            <div class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 text-2xl font-bold">MK</div>
+                                            <div class="absolute -bottom-2 -right-2 bg-blue-500 text-white p-1 rounded-full border-2 border-white" title="Verified Driver">
+                                                <i data-lucide="badge-check" class="h-4 w-4"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1 text-center md:text-left">
+                                            <h3 class="font-bold text-lg text-gray-900">Mahesh Kale</h3>
+                                            <p class="text-sm text-gray-500 mb-2">Swaraj Tractor 744 FE • 3 Tons Capacity</p>
+                                            <div class="flex items-center justify-center md:justify-start gap-3">
+                                                <span class="flex items-center text-sm font-bold text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded"><i data-lucide="star" class="h-3 w-3 fill-current mr-1"></i> 4.5 (45 trips)</span>
+                                                <span class="flex items-center text-sm text-gray-600"><i data-lucide="map-pin" class="h-3 w-3 mr-1 text-gray-400"></i> 5.1 km away</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-2 w-full md:w-auto mt-4 md:mt-0">
+                                            <button class="flex-1 md:flex-none bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-semibold transition flex items-center justify-center"><i data-lucide="message-square" class="h-4 w-4 mr-2"></i> Chat</button>
+                                            <button class="flex-1 md:flex-none bg-agro-600 hover:bg-agro-700 text-white px-6 py-2 rounded-lg font-semibold transition flex items-center justify-center"><i data-lucide="phone" class="h-4 w-4 mr-2"></i> Call</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 5: History & Payments -->
+                            <div id="trans-history" class="trans-tab-content hidden fade-in">
+                                <div class="max-w-4xl mx-auto space-y-6">
+                                    <!-- Summary Cards -->
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
+                                            <i data-lucide="history" class="h-6 w-6 text-blue-500 mx-auto mb-2"></i>
+                                            <p class="text-2xl font-black text-gray-900">12</p>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wider">Total Trips</p>
+                                        </div>
+                                        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
+                                            <i data-lucide="indian-rupee" class="h-6 w-6 text-green-500 mx-auto mb-2"></i>
+                                            <p class="text-2xl font-black text-gray-900">14.5k</p>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wider">Spent</p>
+                                        </div>
+                                        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
+                                            <i data-lucide="shield-check" class="h-6 w-6 text-purple-500 mx-auto mb-2"></i>
+                                            <p class="text-2xl font-black text-gray-900">2</p>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wider">Insured Trips</p>
+                                        </div>
+                                        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
+                                            <i data-lucide="alert-circle" class="h-6 w-6 text-orange-500 mx-auto mb-2"></i>
+                                            <p class="text-2xl font-black text-gray-900">0</p>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wider">Pending Dues</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Transactions -->
+                                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                                        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                                            <h3 class="font-bold text-gray-800">Recent Transactions</h3>
+                                            <button class="text-sm text-agro-600 font-semibold hover:underline">Download Report</button>
+                                        </div>
+                                        <div class="divide-y divide-gray-100">
+                                            
+                                            <!-- Transaction 1 -->
+                                            <div class="p-6 flex flex-col md:flex-row justify-between items-center hover:bg-gray-50 transition">
+                                                <div class="flex items-center w-full md:w-auto mb-4 md:mb-0">
+                                                    <div class="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center mr-4 shrink-0">
+                                                        <i data-lucide="check" class="h-6 w-6"></i>
+                                                    </div>
+                                                    <div>
+                                                        <p class="font-bold text-gray-900">Trip to Pune APMC</p>
+                                                        <p class="text-sm text-gray-500">Yesterday, 2:30 PM • Driver: Santosh Patil</p>
+                                                        <div class="flex gap-2 mt-1">
+                                                            <span class="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-100">Digital Pay</span>
+                                                            <span class="bg-purple-50 text-purple-700 text-[10px] font-bold px-2 py-0.5 rounded border border-purple-100">Crop Insured</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-right w-full md:w-auto flex flex-row md:flex-col justify-between md:justify-center items-center md:items-end border-t md:border-0 border-gray-100 pt-4 md:pt-0">
+                                                    <p class="font-black text-lg text-gray-900">₹1,400</p>
+                                                    <button class="text-sm text-agro-600 hover:text-agro-700 font-medium">View Invoice</button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Transaction 2 -->
+                                            <div class="p-6 flex flex-col md:flex-row justify-between items-center hover:bg-gray-50 transition">
+                                                <div class="flex items-center w-full md:w-auto mb-4 md:mb-0">
+                                                    <div class="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center mr-4 shrink-0">
+                                                        <i data-lucide="check" class="h-6 w-6"></i>
+                                                    </div>
+                                                    <div>
+                                                        <p class="font-bold text-gray-900">Shared Trip to Mumbai</p>
+                                                        <p class="text-sm text-gray-500">12 May 2026 • Driver: Vikram S.</p>
+                                                        <div class="flex gap-2 mt-1">
+                                                            <span class="bg-orange-50 text-orange-700 text-[10px] font-bold px-2 py-0.5 rounded border border-orange-100">Cash Paid</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-right w-full md:w-auto flex flex-row md:flex-col justify-between md:justify-center items-center md:items-end border-t md:border-0 border-gray-100 pt-4 md:pt-0">
+                                                    <p class="font-black text-lg text-gray-900">₹600</p>
+                                                    <button class="text-sm text-agro-600 hover:text-agro-700 font-medium">View Invoice</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TAB 6: SOS & Support -->
+                            <div id="trans-sos" class="trans-tab-content hidden fade-in">
+                                <div class="max-w-2xl mx-auto text-center space-y-8">
+                                    <div class="bg-white p-8 rounded-3xl border border-gray-200 shadow-sm">
+                                        <div class="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+                                            <i data-lucide="shield-alert" class="h-12 w-12 text-red-600"></i>
+                                        </div>
+                                        <h2 class="text-3xl font-black text-gray-900 mb-2">Emergency Assistance</h2>
+                                        <p class="text-gray-500 mb-8 max-w-md mx-auto">If your vehicle breaks down, you face an accident, or need immediate police/medical help during transit, use the buttons below.</p>
+                                        
+                                        <button onclick="app.triggerSOS()" class="w-full md:w-auto px-12 py-5 bg-red-600 hover:bg-red-700 text-white font-black text-xl rounded-2xl shadow-xl hover:shadow-2xl transition transform hover:scale-105 active:scale-95 flex items-center justify-center mx-auto mb-6">
+                                            <i data-lucide="siren" class="h-6 w-6 mr-3 animate-ping"></i> ACTIVATE SOS
+                                        </button>
+                                        
+                                        <p class="text-xs text-red-500 font-semibold mb-8">This will immediately share your live GPS location with authorities and your registered emergency contacts.</p>
+
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex items-center">
+                                                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm mr-3 shrink-0 text-blue-600">
+                                                    <i data-lucide="phone-call" class="h-5 w-5"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="font-bold text-gray-900">Highway Patrol</p>
+                                                    <p class="text-sm text-gray-500">1033</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex items-center">
+                                                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm mr-3 shrink-0 text-green-600">
+                                                    <i data-lucide="wrench" class="h-5 w-5"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="font-bold text-gray-900">AgroLink Support</p>
+                                                    <p class="text-sm text-gray-500">1800-123-AGRO</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         // --- 3. APP LOGIC & ROUTING ---
         class App {
             constructor() {
@@ -1266,9 +2598,29 @@
             }
 
             init() {
-                // Initial render
+                const savedLang = localStorage.getItem('agro_lang') || 'en';
+                this.language = savedLang;
+                const select = document.getElementById('lang-select');
+                if (select) select.value = this.language;
+
+                // Capture initial target route
+                let targetRoute = 'home';
+                if (window.location.hash) {
+                    targetRoute = window.location.hash.replace('#', '');
+                }
+
+                // Show splash screen initially
+                this.currentRoute = 'splash';
                 this.render();
-                this.translate(); // Translate static nav bar initially
+                
+                if (this.language !== 'en') {
+                    this.restoreGoogleTranslate(this.language);
+                }
+
+                // Automatically navigate to target route after 3 seconds
+                setTimeout(() => {
+                    this.navigate(targetRoute);
+                }, 3000);
                 
                 // Setup any global event listeners
                 window.addEventListener('hashchange', () => {
@@ -1276,19 +2628,55 @@
                     if (hash) {
                         this.currentRoute = hash;
                         this.render();
+                        // Re-apply translation after routing
+                        if (this.language !== 'en') {
+                            setTimeout(() => this.forceGoogleTranslateUpdate(this.language), 150);
+                        }
                     }
                 });
-                
-                // Handle initial hash
-                if (window.location.hash) {
-                    this.currentRoute = window.location.hash.replace('#', '');
-                    this.render();
+            }
+
+            restoreGoogleTranslate(lang) {
+                let attempts = 0;
+                const checkExist = setInterval(() => {
+                    const selectField = document.querySelector(".goog-te-combo");
+                    if (selectField) {
+                        if (selectField.value !== lang) {
+                            selectField.value = lang;
+                            selectField.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                        clearInterval(checkExist);
+                    }
+                    attempts++;
+                    if (attempts > 50) clearInterval(checkExist); // Stop after 5s
+                }, 100);
+            }
+
+            forceGoogleTranslateUpdate(lang) {
+                const selectField = document.querySelector(".goog-te-combo");
+                if (selectField) {
+                    // Reset to English first to force re-evaluation of new DOM
+                    selectField.value = 'en';
+                    selectField.dispatchEvent(new Event('change', { bubbles: true }));
+                    setTimeout(() => {
+                        selectField.value = lang;
+                        selectField.dispatchEvent(new Event('change', { bubbles: true }));
+                    }, 50);
+                } else {
+                    this.restoreGoogleTranslate(lang);
                 }
             }
 
             setLanguage(lang) {
                 this.language = lang;
+                localStorage.setItem('agro_lang', lang);
                 this.translate();
+                
+                const selectField = document.querySelector(".goog-te-combo");
+                if (selectField) {
+                    selectField.value = lang;
+                    selectField.dispatchEvent(new Event('change', { bubbles: true }));
+                }
             }
 
             translate() {
@@ -1328,6 +2716,128 @@
                 this.showSearchModal(query);
             }
 
+            showLoginModal() {
+                // Remove existing if any
+                const existing = document.getElementById('login-modal');
+                if (existing) existing.remove();
+                
+                const modalHtml = `
+                    <div id="login-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-60 fade-in p-4 backdrop-blur-sm">
+                        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden">
+                            <!-- Header -->
+                            <div class="bg-agro-600 text-white p-5 flex justify-between items-center">
+                                <h3 class="font-bold text-xl flex items-center"><i data-lucide="user" class="mr-2 h-5 w-5"></i> User Login</h3>
+                                <button type="button" onclick="document.getElementById('login-modal').remove()" class="text-white hover:text-agro-200 transition-colors bg-agro-700 p-2 rounded-full"><i data-lucide="x" class="h-4 w-4"></i></button>
+                            </div>
+                            
+                            <!-- Form Body -->
+                            <div class="p-6">
+                                <form onsubmit="event.preventDefault(); document.getElementById('login-modal').remove(); app.navigate('dashboard-farmer');">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                            <div class="relative">
+                                                <i data-lucide="user" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"></i>
+                                                <input type="text" required placeholder="Enter your name" class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-agro-500 focus:border-agro-500 transition">
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Contact Number</label>
+                                            <div class="relative">
+                                                <i data-lucide="phone" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"></i>
+                                                <input type="tel" required pattern="[0-9]{10}" placeholder="10-digit mobile number" class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-agro-500 focus:border-agro-500 transition">
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Place (City/Village)</label>
+                                            <div class="relative">
+                                                <i data-lucide="map-pin" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"></i>
+                                                <input type="text" required placeholder="Enter your location" class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-agro-500 focus:border-agro-500 transition">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-6">
+                                        <button type="submit" class="w-full bg-agro-600 hover:bg-agro-700 text-white font-semibold py-3 rounded-lg shadow-md transition-colors flex justify-center items-center">
+                                            Continue <i data-lucide="arrow-right" class="h-4 w-4 ml-2"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                                <p class="text-xs text-center text-gray-500 mt-4">By continuing, you agree to AgroLink's Terms of Service and Privacy Policy.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+                if (window.lucide) window.lucide.createIcons();
+            }
+
+            showRegisterModal(type) {
+                // Remove existing if any
+                const existing = document.getElementById('register-modal');
+                if (existing) existing.remove();
+                
+                const isFarmer = type === 'farmer';
+                const title = isFarmer ? 'Farmer Registration' : 'Transporter Registration';
+                const icon = isFarmer ? 'tractor' : 'truck';
+                const placeLabel = isFarmer ? 'Farm Location (Where crops are grown)' : 'Operating Area (City/Region)';
+                const redirectTarget = isFarmer ? 'dashboard-farmer' : 'dashboard-transporter';
+
+                const modalHtml = `
+                    <div id="register-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-60 fade-in p-4 backdrop-blur-sm">
+                        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+                            <!-- Header -->
+                            <div class="bg-agro-600 text-white p-5 flex justify-between items-center">
+                                <h3 class="font-bold text-xl flex items-center"><i data-lucide="${icon}" class="mr-2 h-5 w-5"></i> ${title}</h3>
+                                <button type="button" onclick="document.getElementById('register-modal').remove()" class="text-white hover:text-agro-200 transition-colors bg-agro-700 p-2 rounded-full"><i data-lucide="x" class="h-4 w-4"></i></button>
+                            </div>
+                            
+                            <!-- Form Body -->
+                            <div class="p-6">
+                                <form onsubmit="event.preventDefault(); document.getElementById('register-modal').remove(); app.navigate('${redirectTarget}');">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                            <div class="relative">
+                                                <i data-lucide="user" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"></i>
+                                                <input type="text" required placeholder="Enter your full name" class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-agro-500 focus:border-agro-500 transition">
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Contact Number</label>
+                                            <div class="relative">
+                                                <i data-lucide="phone" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"></i>
+                                                <input type="tel" required pattern="[0-9]{10}" placeholder="10-digit mobile number" class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-agro-500 focus:border-agro-500 transition">
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">${placeLabel}</label>
+                                            <div class="relative">
+                                                <i data-lucide="map-pin" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"></i>
+                                                <input type="text" required placeholder="Enter location" class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-agro-500 focus:border-agro-500 transition">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-6">
+                                        <button type="submit" class="w-full bg-agro-600 hover:bg-agro-700 text-white font-semibold py-3 rounded-lg shadow-md transition-colors flex justify-center items-center">
+                                            Complete Registration <i data-lucide="check-circle" class="h-4 w-4 ml-2"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                                <p class="text-xs text-center text-gray-500 mt-4">By registering, you agree to AgroLink's Terms of Service.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+                if (window.lucide) window.lucide.createIcons();
+            }
+
             showSearchModal(query) {
                 // Remove existing if any
                 const existing = document.getElementById('search-modal');
@@ -1335,15 +2845,15 @@
                 
                 const modalHtml = `
                     <div id="search-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50 fade-in p-4">
-                        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
-                            <div class="bg-agro-600 text-white p-4 flex justify-between items-center">
+                        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col max-h-[90vh]">
+                            <div class="bg-agro-600 text-white p-4 flex justify-between items-center flex-shrink-0">
                                 <h3 class="font-bold text-lg flex items-center"><i data-lucide="globe" class="mr-2 h-5 w-5"></i> Live Market Insights</h3>
                                 <button onclick="document.getElementById('search-modal').remove()" class="text-white hover:text-agro-200"><i data-lucide="x" class="h-5 w-5"></i></button>
                             </div>
-                            <div id="search-modal-content" class="p-8 text-center">
+                            <div id="search-modal-content" class="p-6 text-center overflow-y-auto hide-scrollbar">
                                 <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-agro-600 mx-auto mb-4"></div>
                                 <p class="text-gray-600 font-medium">Fetching live prices and historical trends for <strong>${query}</strong>...</p>
-                                <p class="text-xs text-gray-400 mt-2 flex items-center justify-center"><i data-lucide="chrome" class="h-3 w-3 mr-1"></i> Querying Google Finance Data...</p>
+                                <p class="text-xs text-gray-400 mt-2 flex items-center justify-center"><i data-lucide="chrome" class="h-3 w-3 mr-1"></i> Querying Market Data...</p>
                             </div>
                         </div>
                     </div>
@@ -1359,6 +2869,53 @@
                     // Generate realistic mock price logic based on crop name length
                     const basePrice = (query.length * 6) + 12; 
                     const maxPrice = basePrice + Math.floor(Math.random() * 10) + 5;
+                    
+                    // Try to find if we have specific mock markets for this crop
+                    let cropMarkets = MOCK_DATA.markets.filter(m => m.crop.toLowerCase() === query.toLowerCase());
+                    let marketsHtml = '';
+                    
+                    if (cropMarkets.length > 0) {
+                        marketsHtml = cropMarkets.map(m => `
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex justify-between items-center hover:border-agro-400 hover:shadow-md transition-all cursor-pointer" onclick="app.showMarketLocationModal('${m.name}', '${m.distance}', '${m.price}', '${query}'); document.getElementById('search-modal').remove()">
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm">${m.name}</p>
+                                    <p class="text-xs text-gray-500 flex items-center mt-1"><i data-lucide="navigation" class="h-3 w-3 mr-1 text-agro-500"></i> ${m.distance} km away</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-green-600">₹${m.price}/kg</p>
+                                    <p class="text-[10px] text-gray-400 uppercase tracking-wider mt-0.5">Verified</p>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        // Dynamically generate some markets with the crop name included for realism
+                        let dist1 = Math.floor(Math.random() * 15) + 5;
+                        let dist2 = Math.floor(Math.random() * 40) + 20;
+                        let price1 = maxPrice + 2;
+                        let price2 = maxPrice + 8;
+                        marketsHtml = `
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex justify-between items-center hover:border-agro-400 hover:shadow-md transition-all cursor-pointer" onclick="app.showMarketLocationModal('Local ${query} APMC', '${dist1}', '${price1}', '${query}'); document.getElementById('search-modal').remove()">
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm">Local ${query} APMC</p>
+                                    <p class="text-xs text-gray-500 flex items-center mt-1"><i data-lucide="navigation" class="h-3 w-3 mr-1 text-agro-500"></i> ${dist1} km away</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-green-600">₹${price1}/kg</p>
+                                    <p class="text-[10px] text-gray-400 uppercase tracking-wider mt-0.5">High Demand</p>
+                                </div>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex justify-between items-center hover:border-agro-400 hover:shadow-md transition-all cursor-pointer" onclick="app.showMarketLocationModal('Metro ${query} Hub', '${dist2}', '${price2}', '${query}'); document.getElementById('search-modal').remove()">
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm">Metro ${query} Hub</p>
+                                    <p class="text-xs text-gray-500 flex items-center mt-1"><i data-lucide="navigation" class="h-3 w-3 mr-1 text-agro-500"></i> ${dist2} km away</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-green-600">₹${price2}/kg</p>
+                                    <p class="text-[10px] text-gray-400 uppercase tracking-wider mt-0.5">Bulk Buyers</p>
+                                </div>
+                            </div>
+                        `;
+                    }
                     
                     content.innerHTML = `
                         <div class="flex justify-between items-start mb-4">
@@ -1381,17 +2938,25 @@
                                     <button onclick="app.updateChart('1Y')" id="btn-1Y" class="px-2 py-1 text-xs rounded text-gray-500 hover:bg-gray-200 font-medium transition-colors">1Y</button>
                                 </div>
                             </div>
-                            <div class="relative h-40 w-full">
+                            <div class="relative h-32 w-full">
                                 <canvas id="cropChart"></canvas>
                             </div>
                         </div>
                         
-                        <div class="flex justify-between items-center text-xs text-gray-400 mb-6">
-                            <span class="flex items-center"><i data-lucide="chrome" class="h-3 w-3 mr-1"></i> Google Search Data</span>
-                            <span class="text-green-600 font-medium animate-pulse">Live Updating</span>
+                        <!-- Nearby Markets to Sell -->
+                        <div class="text-left mb-6">
+                            <h5 class="text-sm font-bold text-gray-800 mb-3 flex items-center"><i data-lucide="map-pin" class="h-4 w-4 mr-1 text-red-500"></i> Best Nearby Places to Sell ${query}</h5>
+                            <div class="space-y-3">
+                                ${marketsHtml}
+                            </div>
                         </div>
                         
-                        <button onclick="document.getElementById('search-modal').remove()" class="w-full bg-agro-600 hover:bg-agro-700 text-white font-semibold py-2.5 rounded-lg transition-colors">
+                        <div class="flex justify-between items-center text-xs text-gray-400 mb-4">
+                            <span class="flex items-center"><i data-lucide="chrome" class="h-3 w-3 mr-1"></i> Live APIs</span>
+                            <span class="text-green-600 font-medium animate-pulse">Syncing...</span>
+                        </div>
+                        
+                        <button onclick="document.getElementById('search-modal').remove()" class="w-full bg-agro-600 hover:bg-agro-700 text-white font-semibold py-3 rounded-xl transition-colors shadow-md">
                             Close & Continue
                         </button>
                     `;
@@ -1497,6 +3062,72 @@
                 if (window.lucide) window.lucide.createIcons();
             }
 
+            showMarketLocationModal(marketName, distance, price, crop) {
+                // Remove existing if any
+                const existing = document.getElementById('market-location-modal');
+                if (existing) existing.remove();
+                
+                // Generic Google Maps Embed using query
+                const mapQuery = encodeURIComponent(marketName + ' market India');
+                const mapSrc = `https://maps.google.com/maps?q=${mapQuery}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+                
+                // Unsplash photo placeholder for the market
+                const marketPhoto = 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=600&auto=format&fit=crop';
+                
+                const modalHtml = `
+                    <div id="market-location-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-60 fade-in p-4 backdrop-blur-sm">
+                        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden flex flex-col max-h-[90vh]">
+                            <!-- Header -->
+                            <div class="bg-agro-600 text-white p-4 flex justify-between items-center flex-shrink-0">
+                                <div>
+                                    <h3 class="font-bold text-lg flex items-center"><i data-lucide="map" class="mr-2 h-5 w-5"></i> Market Route & Details</h3>
+                                    <p class="text-xs text-agro-100 mt-0.5">${crop} Trading Hub</p>
+                                </div>
+                                <button onclick="document.getElementById('market-location-modal').remove()" class="text-white hover:text-agro-200 transition-colors bg-agro-700 p-2 rounded-full"><i data-lucide="x" class="h-4 w-4"></i></button>
+                            </div>
+                            
+                            <!-- Scrollable Body -->
+                            <div class="overflow-y-auto hide-scrollbar">
+                                <!-- Market Photo -->
+                                <div class="relative h-48 w-full">
+                                    <img src="${marketPhoto}" class="w-full h-full object-cover" alt="${marketName}">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                                    <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                                        <div>
+                                            <h4 class="text-white font-bold text-xl">${marketName}</h4>
+                                            <p class="text-agro-300 text-sm flex items-center mt-1"><i data-lucide="navigation" class="h-3 w-3 mr-1"></i> ${distance} km away</p>
+                                        </div>
+                                        <div class="bg-green-500 text-white px-3 py-1 rounded-lg text-sm font-bold shadow-md">
+                                            ₹${price}/kg
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-5">
+                                    <!-- Map Iframe -->
+                                    <div class="rounded-xl overflow-hidden shadow-inner border border-gray-200 mb-5 relative bg-gray-100 h-64 w-full">
+                                        <iframe src="${mapSrc}" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" class="absolute inset-0"></iframe>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <button onclick="app.showBookingModal('Mini Truck', 15); document.getElementById('market-location-modal').remove()" class="bg-white border-2 border-agro-600 text-agro-700 hover:bg-agro-50 font-semibold py-2.5 rounded-xl transition-colors shadow-sm flex flex-col items-center justify-center">
+                                            <i data-lucide="truck" class="h-5 w-5 mb-1"></i>
+                                            <span class="text-sm">Book Transport</span>
+                                        </button>
+                                        <button onclick="app.navigate('dashboard-farmer'); document.getElementById('market-location-modal').remove()" class="bg-agro-600 text-white hover:bg-agro-700 font-semibold py-2.5 rounded-xl transition-colors shadow-sm flex flex-col items-center justify-center">
+                                            <i data-lucide="check-circle" class="h-5 w-5 mb-1"></i>
+                                            <span class="text-sm">Accept Price</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+                if (window.lucide) window.lucide.createIcons();
+            }
+
             renderChart(basePrice, timeRange = '1W') {
                 const ctx = document.getElementById('cropChart');
                 if (!ctx) return;
@@ -1592,12 +3223,232 @@
                 }
             }
 
+            filterProducts(category) {
+                // Update buttons
+                const buttons = document.querySelectorAll('.filter-btn');
+                buttons.forEach(btn => {
+                    if (btn.getAttribute('data-category') === category) {
+                        btn.className = 'px-4 py-2 rounded-full text-sm font-medium bg-agro-600 text-white shadow-sm filter-btn';
+                    } else {
+                        btn.className = 'px-4 py-2 rounded-full text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 shadow-sm filter-btn';
+                    }
+                });
+
+                // Filter cards
+                const cards = document.querySelectorAll('.product-card');
+                cards.forEach(card => {
+                    if (category === 'All' || card.getAttribute('data-category') === category) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+
+            switchMarketTab(tabId) {
+                // Hide all tabs
+                document.querySelectorAll('.market-tab-content').forEach(el => {
+                    el.classList.remove('block');
+                    el.classList.add('hidden');
+                });
+                
+                // Show target tab
+                const target = document.getElementById(tabId);
+                if (target) {
+                    target.classList.remove('hidden');
+                    target.classList.add('block');
+                }
+                
+                // Update active button state
+                document.querySelectorAll('.market-tab-btn').forEach(btn => {
+                    btn.className = 'market-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors flex items-center';
+                    if (btn.id === 'btn-tab-requests') {
+                        btn.innerHTML = '<i data-lucide="users" class="h-4 w-4 mr-2"></i> Buyer Requests <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>';
+                        btn.className += ' relative';
+                    }
+                });
+                
+                const activeBtn = document.getElementById('btn-' + tabId);
+                if (activeBtn) {
+                    activeBtn.className = 'market-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium bg-agro-600 text-white transition-colors flex items-center shadow-sm';
+                    if (tabId === 'tab-requests') {
+                        activeBtn.innerHTML = '<i data-lucide="users" class="h-4 w-4 mr-2"></i> Buyer Requests';
+                    }
+                }
+                
+                // Initialize calculator if tab selected
+                if (tabId === 'tab-calculator') {
+                    this.calculateProfit();
+                }
+            }
+
+            calculateProfit() {
+                const qty = parseFloat(document.getElementById('calc-qty')?.value) || 0;
+                const price = parseFloat(document.getElementById('calc-price')?.value) || 0;
+                
+                const seed = parseFloat(document.getElementById('calc-seed')?.value) || 0;
+                const fert = parseFloat(document.getElementById('calc-fert')?.value) || 0;
+                const labor = parseFloat(document.getElementById('calc-labor')?.value) || 0;
+                const transport = parseFloat(document.getElementById('calc-transport')?.value) || 0;
+                
+                const totalRevenue = qty * price;
+                const totalCosts = seed + fert + labor + transport;
+                const netProfit = totalRevenue - totalCosts;
+                
+                let margin = 0;
+                if (totalRevenue > 0) {
+                    margin = Math.round((netProfit / totalRevenue) * 100);
+                }
+
+                const resultEl = document.getElementById('calc-result');
+                const bgEl = document.getElementById('calc-profit-bg');
+                
+                if (resultEl) {
+                    resultEl.innerText = '₹' + netProfit.toLocaleString();
+                    if (netProfit < 0) {
+                        resultEl.className = 'text-4xl font-black text-red-600 relative z-10';
+                        if (bgEl) bgEl.className = 'absolute inset-0 bg-red-100 opacity-20';
+                    } else {
+                        resultEl.className = 'text-4xl font-black text-green-600 relative z-10';
+                        if (bgEl) bgEl.className = 'absolute inset-0 bg-green-100 opacity-20';
+                    }
+                }
+                
+                const grossEl = document.getElementById('calc-gross');
+                if (grossEl) grossEl.innerText = '₹' + totalRevenue.toLocaleString();
+                
+                const costsEl = document.getElementById('calc-costs');
+                if (costsEl) costsEl.innerText = '-₹' + totalCosts.toLocaleString();
+                
+                const marginEl = document.getElementById('calc-margin');
+                if (marginEl) marginEl.innerText = margin + '%';
+            }
+
+            showMarketLocationModal(name, distance, price, crop) {
+                const existing = document.getElementById('location-modal');
+                if (existing) existing.remove();
+                
+                const modalHtml = `
+                    <div id="location-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-60 fade-in p-4 backdrop-blur-sm">
+                        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden">
+                            <div class="p-0 h-48 relative bg-gray-200">
+                                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&h=400&fit=crop" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                                <button onclick="document.getElementById('location-modal').remove()" class="absolute top-4 right-4 bg-black/30 hover:bg-black/50 text-white rounded-full p-1.5 transition"><i data-lucide="x" class="h-4 w-4"></i></button>
+                                <div class="absolute bottom-4 left-4 right-4">
+                                    <h3 class="font-bold text-white text-xl">\${name}</h3>
+                                    <p class="text-white/80 text-sm flex items-center mt-1"><i data-lucide="navigation" class="h-3 w-3 mr-1 text-red-400"></i> \${distance} km from your location</p>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <div class="bg-green-50 border border-green-100 rounded-lg p-3 mb-4 flex justify-between items-center">
+                                    <div>
+                                        <p class="text-xs text-green-800 uppercase font-semibold">Buying \${crop}</p>
+                                        <p class="text-2xl font-black text-green-600">₹\${price}/kg</p>
+                                    </div>
+                                    <i data-lucide="trending-up" class="h-8 w-8 text-green-500 opacity-50"></i>
+                                </div>
+                                <button class="w-full bg-agro-600 hover:bg-agro-700 text-white font-bold py-3 rounded-lg shadow-md transition-colors flex justify-center items-center">
+                                    <i data-lucide="navigation" class="h-4 w-4 mr-2"></i> Start Navigation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+                if (window.lucide) window.lucide.createIcons();
+            }
+
+            showBookingModal(vehicle, price) {
+                const existing = document.getElementById('booking-modal');
+                if (existing) existing.remove();
+                
+                const modalHtml = `
+                    <div id="booking-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-60 fade-in p-4 backdrop-blur-sm">
+                        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden text-center p-8">
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i data-lucide="check-circle" class="h-8 w-8 text-green-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Driver Confirmed!</h3>
+                            <p class="text-gray-500 mb-6">Your \${vehicle} will arrive in approximately 15 minutes. Driver contact details sent via SMS.</p>
+                            <div class="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-100 text-left">
+                                <p class="text-sm text-gray-500">Estimated Fare</p>
+                                <p class="text-xl font-bold text-gray-800">₹\${price}</p>
+                                <p class="text-xs text-gray-400 mt-1">To be paid digitally upon delivery</p>
+                            </div>
+                            <button onclick="document.getElementById('booking-modal').remove(); app.switchMarketTab('tab-requests');" class="w-full bg-agro-600 hover:bg-agro-700 text-white font-bold py-3 rounded-lg shadow-md transition-colors">
+                                Track Vehicle
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+                if (window.lucide) window.lucide.createIcons();
+            }
+
             navigate(route) {
                 this.currentRoute = route;
                 window.location.hash = route;
                 this.render();
                 // Scroll to top
                 window.scrollTo(0, 0);
+            }
+
+            switchTransportTab(tabId) {
+                // Hide all tabs
+                document.querySelectorAll('.trans-tab-content').forEach(el => {
+                    el.classList.remove('block');
+                    el.classList.add('hidden');
+                });
+                
+                // Show target
+                const target = document.getElementById(tabId);
+                if (target) {
+                    target.classList.remove('hidden');
+                    target.classList.add('block');
+                }
+                
+                // Update buttons
+                document.querySelectorAll('.trans-tab-btn').forEach(btn => {
+                    if (btn.id === 'btn-trans-sos') {
+                        btn.className = 'trans-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center';
+                    } else {
+                        btn.className = 'trans-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors flex items-center';
+                    }
+                });
+                
+                const activeBtn = document.getElementById('btn-' + tabId);
+                if (activeBtn) {
+                    if (tabId === 'trans-sos') {
+                        activeBtn.className = 'trans-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium bg-red-600 text-white transition-colors flex items-center shadow-sm';
+                    } else {
+                        activeBtn.className = 'trans-tab-btn flex-shrink-0 px-4 py-2.5 rounded-lg text-sm font-medium bg-agro-600 text-white transition-colors flex items-center shadow-sm';
+                    }
+                }
+            }
+
+            selectVehicle(element, name, price) {
+                // Remove selection from all
+                document.querySelectorAll('.vehicle-card').forEach(card => {
+                    card.classList.remove('border-agro-500', 'bg-agro-50/30');
+                    card.classList.add('border-transparent', 'border-gray-100');
+                });
+                // Add to clicked
+                element.classList.remove('border-transparent', 'border-gray-100');
+                element.classList.add('border-agro-500', 'bg-agro-50/30');
+                
+                this.selectedTransportFare = price;
+                this.selectedTransportType = name;
+            }
+
+            showTransportBookingModal() {
+                const vehicle = this.selectedTransportType || 'Mini Truck';
+                const price = this.selectedTransportFare || 1400;
+                this.showBookingModal(vehicle, price);
+            }
+
+            triggerSOS() {
+                alert("EMERGENCY SOS ACTIVATED!\nLive GPS Location shared with nearest Highway Patrol (1033) and your 3 Emergency Contacts.");
             }
 
             initFarmerDashboard() {
@@ -1680,6 +3531,9 @@
                 }, 0);
 
                 switch (this.currentRoute) {
+                    case 'splash':
+                        this.root.innerHTML = SplashView();
+                        break;
                     case 'home':
                         this.root.innerHTML = HomeView();
                         break;
@@ -1720,5 +3574,18 @@
         // Initial icon render
         lucide.createIcons();
     </script>
+
+    <!-- Google Translate Element -->
+    <div id="google_translate_element"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,hi,kn',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
